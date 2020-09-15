@@ -97,6 +97,11 @@ void LtePhyVUeMode4::initialize(int stage)
         interPacketDelay            = registerSignal("interPacketDelay");
         posX                        = registerSignal("posX");
         posY                        = registerSignal("posY");
+        cbrMsg                      = registerSignal("cbrMsg");
+
+        sentMsg                     = registerSignal("sentMsg");
+        rcvdMsg                      = registerSignal("receivedMsg");
+
 
         tbFailedDueToPropIgnoreSCI         = registerSignal("tbFailedDueToPropIgnoreSCI");
         tbFailedDueToInterferenceIgnoreSCI = registerSignal("tbFailedDueToInterferenceIgnoreSCI");
@@ -419,6 +424,7 @@ void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
     frame = prepareAirFrame(msg, lteInfo);
 
     emit(tbSent, 1);
+    emit(sentMsg,frame);
 
     if (lteInfo->getDirection() == D2D_MULTI)
         sendBroadcast(frame);
@@ -1430,7 +1436,8 @@ void LtePhyVUeMode4::decodeAirFrame(LteAirFrame* frame, UserControlInfo* lteInfo
                 int lengthInSubchannels = std::get<1>(indexAndLength);
 
                 std::vector <Subchannel *> currentSubframe = sensingWindow_[sensingWindowFront_];
-                for (int i = subchannelIndex; i < subchannelIndex + lengthInSubchannels; i++) {
+                // FIXMe:  subchannelIndex + lengthInSubchannels gives range bug --> replaced by currentSubframe.size()
+                for (int i = subchannelIndex; i <currentSubframe.size() ; i++) {
                     Subchannel *currentSubchannel = currentSubframe[i];
                     std::vector<Band>::iterator lt;
                     std::vector <Band> allocatedBands = currentSubchannel->getOccupiedBands();
@@ -1590,6 +1597,7 @@ void LtePhyVUeMode4::updateCBR()
 
     Cbr* cbrPkt = new Cbr("CBR");
     cbrPkt->setCbr(cbrValue);
+    emit(cbrMsg,cbrPkt);
     send(cbrPkt, upperGateOut_);
 }
 

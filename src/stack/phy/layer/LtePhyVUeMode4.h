@@ -94,6 +94,12 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
     simsignal_t tbFailedDueToInterferenceIgnoreSCI;
     simsignal_t tbDecodedIgnoreSCI;
 
+    simsignal_t cbrMsg;
+    simsignal_t sentMsg;
+    simsignal_t rcvdMsg;
+
+
+
     int sciReceived_;
     int sciDecoded_;
     int sciFailedHalfDuplex_;
