@@ -3,7 +3,7 @@
   id="SimuLTE_Cars"
   name="SimuLTE Cars"
   description = "LTE-enabled vehicular networks"
-  initiallyEnabled = "false"
+  initiallyEnabled = "true"
   requires = ""
   labels = ""
   nedPackages = "lte.corenetwork.nodes.cars
