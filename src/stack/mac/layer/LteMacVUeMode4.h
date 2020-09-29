@@ -32,6 +32,7 @@ protected:
    /// Lte AMC module
    LteAmc *amc_;
 
+   int msgFlag;
    /// Local LteDeployer
    LteDeployer *deployer_;
 

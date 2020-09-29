@@ -23,7 +23,7 @@
 #include "stack/phy/packet/cbr_m.h"
 
 Define_Module(LtePhyVUeMode4);
-
+simsignal_t LtePhyVUeMode4::rcvdFromUpperLayerSignal=registerSignal("rcvdFromUpperLayerSignal");
 LtePhyVUeMode4::LtePhyVUeMode4()
 {
     handoverStarter_ = NULL;
@@ -99,8 +99,7 @@ void LtePhyVUeMode4::initialize(int stage)
         posY                        = registerSignal("posY");
         cbrMsg                      = registerSignal("cbrMsg");
 
-        sentMsg                     = registerSignal("sentMsg");
-        rcvdMsg                      = registerSignal("receivedMsg");
+
 
 
         tbFailedDueToPropIgnoreSCI         = registerSignal("tbFailedDueToPropIgnoreSCI");
@@ -375,6 +374,7 @@ void LtePhyVUeMode4::handleAirFrame(cMessage* msg)
 void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
 {
 
+    emit(rcvdFromUpperLayerSignal, msg);
     UserControlInfo* lteInfo = check_and_cast<UserControlInfo*>(msg->removeControlInfo());
 
     LteAirFrame* frame;
@@ -424,7 +424,7 @@ void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
     frame = prepareAirFrame(msg, lteInfo);
 
     emit(tbSent, 1);
-    emit(sentMsg,frame);
+
 
     if (lteInfo->getDirection() == D2D_MULTI)
         sendBroadcast(frame);

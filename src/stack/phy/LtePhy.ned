@@ -100,8 +100,7 @@ simple LtePhyVUeMode4 extends LtePhyUeD2D {
 	    int sensingWindowSizeOverride = default(-1);
 
 		@signal[cbrMsg];
-	    @signal[sentMsg];
-	    @signal[receivedMsg];
+	    @signal[rcvdFromUpperLayerSignal];
 	    
 	    
 	    @signal[cbr];

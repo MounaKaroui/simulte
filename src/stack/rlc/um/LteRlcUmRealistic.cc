@@ -114,7 +114,12 @@ void LteRlcUmRealistic::handleUpperMessage(cPacket *pkt)
 
     EV << "LteRlcUmRealistic::handleUpperMessage - Received packet " << pkt->getName() << " from upper layer, size " << pkt->getByteLength() << "\n";
 
-    LteControlInfo* lteInfo = check_and_cast<LteControlInfo*>(pkt->removeControlInfo());
+    //// changed by me
+    LteControlInfo* lteInfo = check_and_cast<LteControlInfo*>(pkt->getControlInfo());
+    int msgFlag=lteInfo->getMsgFlag();
+    lteInfo = check_and_cast<LteControlInfo*>(pkt->removeControlInfo());
+    lteInfo->setMsgFlag(msgFlag);
+    //////
 
     UmTxEntity* txbuf = getTxBuffer(lteInfo);
 

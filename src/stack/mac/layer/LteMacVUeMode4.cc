@@ -370,6 +370,7 @@ void LteMacVUeMode4::macPduMake()
             // Always goes here because of the macPduList_.clear() at the beginning
             // Build the Control Element of the MAC PDU
             UserControlInfo* uinfo = new UserControlInfo();
+            uinfo->setMsgFlag(msgFlag);
             uinfo->setSourceId(getMacNodeId());
             uinfo->setDestId(destId);
             uinfo->setLcid(MacCidToLcid(destCid));
@@ -628,7 +629,12 @@ void LteMacVUeMode4::handleMessage(cMessage *msg)
     {
         if (strcmp(pkt->getName(), "newDataPkt")== 0)
         {
-            FlowControlInfoNonIp* lteInfo = check_and_cast<FlowControlInfoNonIp*>(pkt->removeControlInfo());
+            //// changed by me
+            FlowControlInfoNonIp* lteInfo = check_and_cast<FlowControlInfoNonIp*>(pkt->getControlInfo());
+            msgFlag=lteInfo->getMsgFlag();
+            lteInfo = check_and_cast<FlowControlInfoNonIp*>(pkt->removeControlInfo());
+            lteInfo->setMsgFlag(msgFlag);
+            //////
             receivedTime_ = NOW;
             simtime_t elapsedTime = receivedTime_ - lteInfo->getCreationTime();
             simtime_t duration = SimTime(lteInfo->getDuration(), SIMTIME_MS);
