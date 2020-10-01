@@ -1183,6 +1183,11 @@ void LteMacVUeMode4::flushHarqBuffers()
                     }
                     if (!foundValidMCS)
                     {
+                        cRuntimeError((string("PDU length= ")
+                                + to_string(pduLength)
+                                + string(" is higher than the MCS capacity= ")
+                                + to_string(mcsCapacity)
+                                +" , please reconfigure PDU length :)").c_str());
                         // Never found an MCS to satisfy the requirements of the message must regenerate grant
                         LteMode4SchedulingGrant* mode4Grant = check_and_cast<LteMode4SchedulingGrant*>(schedulingGrant_);
                         int priority = mode4Grant->getSpsPriority();
