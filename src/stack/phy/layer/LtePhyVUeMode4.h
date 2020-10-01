@@ -20,7 +20,7 @@
 class LtePhyVUeMode4 : public LtePhyUeD2D
 {
   public:
-    static  simsignal_t rcvdFromUpperLayerSignal;
+    static  simsignal_t sentToLowerLayerSignal;
   protected:
 
     // D2D Tx Power
@@ -95,10 +95,6 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
     simsignal_t tbFailedDueToPropIgnoreSCI;
     simsignal_t tbFailedDueToInterferenceIgnoreSCI;
     simsignal_t tbDecodedIgnoreSCI;
-
-    simsignal_t cbrMsg;
-
-
 
     int sciReceived_;
     int sciDecoded_;

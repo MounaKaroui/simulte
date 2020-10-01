@@ -23,7 +23,7 @@
 #include "stack/phy/packet/cbr_m.h"
 
 Define_Module(LtePhyVUeMode4);
-simsignal_t LtePhyVUeMode4::rcvdFromUpperLayerSignal=registerSignal("rcvdFromUpperLayerSignal");
+simsignal_t LtePhyVUeMode4::sentToLowerLayerSignal=registerSignal("sentToLowerLayerSignal");
 LtePhyVUeMode4::LtePhyVUeMode4()
 {
     handoverStarter_ = NULL;
@@ -97,11 +97,6 @@ void LtePhyVUeMode4::initialize(int stage)
         interPacketDelay            = registerSignal("interPacketDelay");
         posX                        = registerSignal("posX");
         posY                        = registerSignal("posY");
-        cbrMsg                      = registerSignal("cbrMsg");
-
-
-
-
         tbFailedDueToPropIgnoreSCI         = registerSignal("tbFailedDueToPropIgnoreSCI");
         tbFailedDueToInterferenceIgnoreSCI = registerSignal("tbFailedDueToInterferenceIgnoreSCI");
         tbDecodedIgnoreSCI                 = registerSignal("tbDecodedIgnoreSCI");
@@ -149,6 +144,7 @@ void LtePhyVUeMode4::initialize(int stage)
 
 void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
 {
+
     if (msg->isName("d2dDecodingTimer"))
     {
         std::vector<int> missingTbs;
@@ -158,7 +154,11 @@ void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
             UserControlInfo* sciInfo = check_and_cast<UserControlInfo*>(sciFrame->removeControlInfo());
             for (int j=0; j<tbFrames_.size();j++){
                 LteAirFrame* tbFrame = tbFrames_[j];
-                UserControlInfo* tbInfo = check_and_cast<UserControlInfo*>(tbFrame->removeControlInfo());
+                UserControlInfo* tbInfo = check_and_cast<UserControlInfo*>(tbFrame->getControlInfo());
+                int msgFlag=tbInfo->getMsgFlag();
+                tbInfo = check_and_cast<UserControlInfo*>(tbFrame->removeControlInfo());
+                tbInfo->setMsgFlag(msgFlag);
+
                 if (sciInfo->getSourceId() == tbInfo->getSourceId()){
                     foundTB = true;
                     tbFrame->setControlInfo(tbInfo);
@@ -186,6 +186,7 @@ void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
             sciRssiVectors_.pop_back();
             sciSinrVectors_.pop_back();
             sciAttenuations_.pop_back();
+
 
             UserControlInfo* lteInfo = check_and_cast<UserControlInfo*>(frame->removeControlInfo());
 
@@ -256,6 +257,7 @@ void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
                 tbSinrVectors_.pop_back();
                 tbAttenuations_.pop_back();
 
+
                 UserControlInfo *lteInfo = check_and_cast<UserControlInfo *>(frame->removeControlInfo());
 
                 // decode the selected frame
@@ -316,6 +318,7 @@ void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
 // TODO: ***reorganize*** method
 void LtePhyVUeMode4::handleAirFrame(cMessage* msg)
 {
+
     UserControlInfo* lteInfo = check_and_cast<UserControlInfo*>(msg->removeControlInfo());
 
     connectedNodeId_ = masterId_;
@@ -374,8 +377,16 @@ void LtePhyVUeMode4::handleAirFrame(cMessage* msg)
 void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
 {
 
-    emit(rcvdFromUpperLayerSignal, msg);
-    UserControlInfo* lteInfo = check_and_cast<UserControlInfo*>(msg->removeControlInfo());
+    int msgFlag;
+    UserControlInfo* lteInfo ;
+    if (msg->getClassName() == string("LteMacPdu"))
+    {
+    LteMacPdu* pkt=dynamic_cast<LteMacPdu*>(msg);
+    lteInfo = check_and_cast<UserControlInfo*>(pkt->getControlInfo());
+    msgFlag=lteInfo->getMsgFlag();
+    }
+    lteInfo = check_and_cast<UserControlInfo*>(msg->removeControlInfo());
+    lteInfo->setMsgFlag(msgFlag);
 
     LteAirFrame* frame;
 
@@ -424,12 +435,14 @@ void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
     frame = prepareAirFrame(msg, lteInfo);
 
     emit(tbSent, 1);
-
+    emit(sentToLowerLayerSignal,frame);
 
     if (lteInfo->getDirection() == D2D_MULTI)
         sendBroadcast(frame);
     else
         sendUnicast(frame);
+
+   // emit(sentToLowerLayerSignal, frame);
 }
 
 RbMap LtePhyVUeMode4::sendSciMessage(cMessage* msg, UserControlInfo* lteInfo)
@@ -1597,7 +1610,6 @@ void LtePhyVUeMode4::updateCBR()
 
     Cbr* cbrPkt = new Cbr("CBR");
     cbrPkt->setCbr(cbrValue);
-    emit(cbrMsg,cbrPkt);
     send(cbrPkt, upperGateOut_);
 }
 

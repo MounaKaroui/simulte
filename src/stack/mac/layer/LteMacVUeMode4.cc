@@ -70,9 +70,7 @@ void LteMacVUeMode4::initialize(int stage)
         cbr_=0;
         currentCw_=0;
         missedTransmissions_=0;
-
         expiredGrant_ = false;
-
         currentCbrIndex_ = defaultCbrIndex_;
 
         // Register the necessary signals for this simulation
