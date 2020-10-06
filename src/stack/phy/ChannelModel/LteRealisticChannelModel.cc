@@ -2151,8 +2151,10 @@ std::tuple<bool, bool> LteRealisticChannelModel::error_Mode4(LteAirFrame *frame,
                 if (it->first != lteInfo->getCw()) continue;
 
             //Get the Bler
-            averageSnr += dBToLinear(snrV[jt->first]);
-            averageSinr += dBToLinear(sinrVector[jt->first]);
+            if(jt->first<snrV.size())
+                averageSnr += dBToLinear(snrV[jt->first]);
+            if(jt->first<sinrVector.size())
+                averageSinr += dBToLinear(sinrVector[jt->first]);
             countUsedRbs += 1;
         }
     }
