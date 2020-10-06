@@ -37,6 +37,7 @@
 #include <map>
 
 Define_Module(LteMacVUeMode4);
+simsignal_t LteMacVUeMode4::dropPacketDueToNonAvailableHARQProcess=registerSignal("dropPacketDueToNonAvailableHARQProcess");
 
 LteMacVUeMode4::LteMacVUeMode4() :
     LteMacUeRealisticD2D()
@@ -478,6 +479,7 @@ void LteMacVUeMode4::macPduMake()
         if (txList.second.empty())
         {
             EV << "LteMacUeRealisticD2D() : no available process for this MAC pdu in TxHarqBuffer" << endl;
+            emit(dropPacketDueToNonAvailableHARQProcess,macPkt);
             delete macPkt;
         }
         else
@@ -1206,11 +1208,11 @@ void LteMacVUeMode4::flushHarqBuffers()
                             schedulingGrant_ = NULL;
                             macGenerateSchedulingGrant(remainingTime_, priority);
                         }
-                        cRuntimeError((string("PDU length= ")
-                                + to_string(pduLength)
-                                + string(" is higher than the MCS capacity= ")
-                                + to_string(mcsCapacity)
-                                + " , please reconfigure PDU length :)").c_str());
+//                        cRuntimeError((string("PDU length= ")
+//                                + to_string(pduLength)
+//                                + string(" is higher than the MCS capacity= ")
+//                                + to_string(mcsCapacity)
+//                                + " , please reconfigure PDU length :)").c_str());
                     }
                 }
                 break;
