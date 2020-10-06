@@ -369,11 +369,14 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
             {
                 emit(macBufferOverflowDl_,sample);
             }
-            else
+            else if (lteInfo->getDirection()==UL)
             {
                 emit(macBufferOverflowUl_,sample);
             }
-
+            else // D2D
+            {
+                emit(macBufferOverflowD2D_,pkt);
+            }
             EV << "LteMacBuffers : Dropped packet: queue" << cid << " is full\n";
             delete pkt;
             return false;
