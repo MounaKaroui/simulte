@@ -134,7 +134,8 @@ simple LteMacIPBase like LteMac {
         //# signals for indicating buffer overflow
         @signal[macBufferOverflowUl];
         @signal[macBufferOverflowDl];
-
+		@signal[dropPacketDueToNonAvailableHARQProcess];
+        
     gates:
         //# 
         //# Gates connecting RLC and MAC Layers
