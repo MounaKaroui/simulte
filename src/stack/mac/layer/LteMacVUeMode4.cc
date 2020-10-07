@@ -37,7 +37,6 @@
 #include <map>
 
 Define_Module(LteMacVUeMode4);
-simsignal_t LteMacVUeMode4::dropPacketDueToNonAvailableHARQProcess=registerSignal("dropPacketDueToNonAvailableHARQProcess");
 
 LteMacVUeMode4::LteMacVUeMode4() :
     LteMacUeRealisticD2D()
@@ -479,7 +478,6 @@ void LteMacVUeMode4::macPduMake()
         if (txList.second.empty())
         {
             EV << "LteMacUeRealisticD2D() : no available process for this MAC pdu in TxHarqBuffer" << endl;
-            emit(dropPacketDueToNonAvailableHARQProcess,macPkt);
             delete macPkt;
         }
         else

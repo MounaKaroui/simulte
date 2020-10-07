@@ -13,6 +13,8 @@
 #include "stack/mac/packet/LteSchedulingGrant.h"
 #include "stack/mac/scheduler/LteSchedulerUeUl.h"
 #include "stack/mac/packet/LteRac_m.h"
+#include "stack/mac/packet/BufferOccupancyIndication_m.h"
+
 #include "stack/mac/buffer/LteMacBuffer.h"
 #include "stack/mac/amc/UserTxParams.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
@@ -22,6 +24,8 @@
 #include "stack/mac/packet/LteMacSduRequest.h"
 
 Define_Module(LteMacUeRealistic);
+
+simsignal_t  LteMacUeRealistic::bufferOccupancySignal=registerSignal("bufferOccupancySignal");
 
 LteMacUeRealistic::LteMacUeRealistic() :
     LteMacUe()
@@ -291,6 +295,8 @@ void LteMacUeRealistic::macPduMake()
 
 bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
 {
+    BufferOccupancyIndication* bufferOccupancyIndication=new BufferOccupancyIndication("BufferOccupancyMsg");
+
     if (pkt->getByteLength() == 0)
         return false;
 
@@ -327,6 +333,8 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
             EV << "LteMacBuffers : Using new buffer on node: " <<
             MacCidToNodeId(cid) << " for Lcid: " << MacCidToLcid(cid) << ", Bytes in the Queue: " <<
             vqueue->getQueueOccupancy() << "\n";
+            bufferOccupancyIndication->setBufferVacancy(vqueue->getQueueLength() - vqueue->getQueueOccupancy());
+            emit(bufferOccupancySignal,bufferOccupancyIndication);
         }
         else
         {
@@ -336,6 +344,8 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
             EV << "LteMacBuffers : Using old buffer on node: " <<
             MacCidToNodeId(cid) << " for Lcid: " << MacCidToLcid(cid) << ", Space left in the Queue: " <<
             vqueue->getQueueOccupancy() << "\n";
+            bufferOccupancyIndication->setBufferVacancy(vqueue->getQueueLength() - vqueue->getQueueOccupancy());
+            emit(bufferOccupancySignal,bufferOccupancyIndication);
         }
 
         return true;    // notify the activation of the connection
@@ -356,6 +366,7 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
         EV << "LteMacBuffers : Using new buffer on node: " <<
         MacCidToNodeId(cid) << " for Lcid: " << MacCidToLcid(cid) << ", Space left in the Queue: " <<
         queue->getQueueSize() - queue->getByteLength() << "\n";
+
     }
     else
     {

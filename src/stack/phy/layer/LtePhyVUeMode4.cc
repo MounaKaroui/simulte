@@ -24,6 +24,9 @@
 
 Define_Module(LtePhyVUeMode4);
 simsignal_t LtePhyVUeMode4::sentToLowerLayerSignal=registerSignal("sentToLowerLayerSignal");
+simsignal_t LtePhyVUeMode4::cbrSignal=registerSignal("cbrSignal");
+
+
 LtePhyVUeMode4::LtePhyVUeMode4()
 {
     handoverStarter_ = NULL;
@@ -240,7 +243,6 @@ void LtePhyVUeMode4::handleSelfMessage(cMessage *msg)
                 emit(tbFailedDueToInterference, -1);
                 emit(tbFailedButSCIReceived, -1);
                 emit(tbFailedHalfDuplex, -1);
-
                 emit(tbFailedDueToPropIgnoreSCI ,-1);
                 emit(tbFailedDueToInterferenceIgnoreSCI ,-1);
                 emit(tbDecodedIgnoreSCI ,-1);
@@ -1610,6 +1612,8 @@ void LtePhyVUeMode4::updateCBR()
 
     Cbr* cbrPkt = new Cbr("CBR");
     cbrPkt->setCbr(cbrValue);
+
+    emit(cbrSignal,cbrPkt);
     send(cbrPkt, upperGateOut_);
 }
 

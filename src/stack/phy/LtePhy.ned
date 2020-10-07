@@ -100,6 +100,9 @@ simple LtePhyVUeMode4 extends LtePhyUeD2D {
 	    int sensingWindowSizeOverride = default(-1);
 
 	    @signal[sentToLowerLayerSignal];
+	    @signal[cbrSignal];
+	    
+	    
 	    @signal[cbr];
  		@statistic[cbr](title="Channel Busy Ratio"; source="cbr"; record=mean,vector);
  		@signal[sciReceived];

@@ -31,7 +31,6 @@ class LteMacVUeMode4: public LteMacUeRealisticD2D {
 
 public:
 
- static  simsignal_t  dropPacketDueToNonAvailableHARQProcess;
 
 protected:
 

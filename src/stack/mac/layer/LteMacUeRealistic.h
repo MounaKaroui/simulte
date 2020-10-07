@@ -76,6 +76,8 @@ class LteMacUeRealistic : public LteMacUe
     virtual void flushHarqBuffers();
 
   public:
+    static simsignal_t  bufferOccupancySignal ;
+
     LteMacUeRealistic();
     virtual ~LteMacUeRealistic();
 };
