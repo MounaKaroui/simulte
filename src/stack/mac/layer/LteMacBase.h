@@ -103,8 +103,7 @@ class LteMacBase : public cSimpleModule
     /// Mac Sdu Real Buffers
     LteMacBuffers mbuf_;
 
-    /// Mac Sdu Virtual Buffers
-    LteMacBufferMap macBuffers_;
+
 
     /// List of pdus finalized for each user on each codeword
     MacPduList macPduList_;
@@ -136,6 +135,9 @@ class LteMacBase : public cSimpleModule
     std::map<MacNodeId, simtime_t> resetHarq_;
 
   public:
+
+    /// Mac Sdu Virtual Buffers
+       LteMacBufferMap macBuffers_;
 
     /**
      * Initializes MAC Buffers

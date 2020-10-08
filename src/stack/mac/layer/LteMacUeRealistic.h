@@ -57,6 +57,7 @@ class LteMacUeRealistic : public LteMacUe
      * bufferizePacket() is called every time a packet is
      * received from the upper layer
      */
+
     virtual bool bufferizePacket(cPacket* pkt);
 
     /**
@@ -76,8 +77,8 @@ class LteMacUeRealistic : public LteMacUe
     virtual void flushHarqBuffers();
 
   public:
-    static simsignal_t  bufferOccupancySignal ;
 
+    void getLteMacBuffer(LteMacBuffer& queue);
     LteMacUeRealistic();
     virtual ~LteMacUeRealistic();
 };

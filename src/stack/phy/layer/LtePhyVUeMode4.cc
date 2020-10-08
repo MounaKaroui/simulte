@@ -24,7 +24,7 @@
 
 Define_Module(LtePhyVUeMode4);
 simsignal_t LtePhyVUeMode4::sentToLowerLayerSignal=registerSignal("sentToLowerLayerSignal");
-simsignal_t LtePhyVUeMode4::cbrSignal=registerSignal("cbrSignal");
+
 
 
 LtePhyVUeMode4::LtePhyVUeMode4()
@@ -1574,6 +1574,8 @@ std::tuple<int,int> LtePhyVUeMode4::decodeRivValue(SidelinkControlInformation* s
     return std::make_tuple(subchannelIndex, lengthInSubchannels);
 }
 
+
+
 void LtePhyVUeMode4::updateCBR()
 {
     double cbrValue = 0.0;
@@ -1607,13 +1609,9 @@ void LtePhyVUeMode4::updateCBR()
     }
 
     cbrValue = cbrValue / totalSubchannels;
-
+    mCBR=cbrValue;
     emit(cbr, cbrValue);
-
     Cbr* cbrPkt = new Cbr("CBR");
-    cbrPkt->setCbr(cbrValue);
-
-    emit(cbrSignal,cbrPkt);
     send(cbrPkt, upperGateOut_);
 }
 

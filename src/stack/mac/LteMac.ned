@@ -397,7 +397,7 @@ simple LteMacVUeMode4 extends LteMacNonIPBase
 		// Packet size on break 
 		// Maximum capacity on grant break
 
-		@signal[bufferOccupancySignal];
+		
 		@signal[grantStartTime];
 		@statistic[grantStartTime](title="Grant StartTime"; source="grantStartTime"; record=sum,vector);
 		@signal[grantBreak];

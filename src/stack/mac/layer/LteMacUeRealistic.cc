@@ -13,8 +13,6 @@
 #include "stack/mac/packet/LteSchedulingGrant.h"
 #include "stack/mac/scheduler/LteSchedulerUeUl.h"
 #include "stack/mac/packet/LteRac_m.h"
-#include "stack/mac/packet/BufferOccupancyIndication_m.h"
-
 #include "stack/mac/buffer/LteMacBuffer.h"
 #include "stack/mac/amc/UserTxParams.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
@@ -25,7 +23,6 @@
 
 Define_Module(LteMacUeRealistic);
 
-simsignal_t  LteMacUeRealistic::bufferOccupancySignal=registerSignal("bufferOccupancySignal");
 
 LteMacUeRealistic::LteMacUeRealistic() :
     LteMacUe()
@@ -293,9 +290,14 @@ void LteMacUeRealistic::macPduMake()
     }
 }
 
+void getLteMacBuffer(LteMacBuffer& queue)
+{
+
+
+}
+
 bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
 {
-    BufferOccupancyIndication* bufferOccupancyIndication=new BufferOccupancyIndication("BufferOccupancyMsg");
 
     if (pkt->getByteLength() == 0)
         return false;
@@ -303,7 +305,6 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
     pkt->setTimestamp();        // Add timestamp with current time to packet
 
     LteControlInfo* lteInfo = check_and_cast<LteControlInfo*>(pkt->getControlInfo());
-
     // obtain the cid from the packet informations
     MacCid cid = ctrlInfoToMacCid(lteInfo);
 
@@ -333,19 +334,16 @@ bool LteMacUeRealistic::bufferizePacket(cPacket* pkt)
             EV << "LteMacBuffers : Using new buffer on node: " <<
             MacCidToNodeId(cid) << " for Lcid: " << MacCidToLcid(cid) << ", Bytes in the Queue: " <<
             vqueue->getQueueOccupancy() << "\n";
-            bufferOccupancyIndication->setBufferVacancy(vqueue->getQueueLength() - vqueue->getQueueOccupancy());
-            emit(bufferOccupancySignal,bufferOccupancyIndication);
+
         }
         else
         {
             LteMacBuffer* vqueue = macBuffers_.find(cid)->second;
             vqueue->pushBack(vpkt);
-
             EV << "LteMacBuffers : Using old buffer on node: " <<
             MacCidToNodeId(cid) << " for Lcid: " << MacCidToLcid(cid) << ", Space left in the Queue: " <<
             vqueue->getQueueOccupancy() << "\n";
-            bufferOccupancyIndication->setBufferVacancy(vqueue->getQueueLength() - vqueue->getQueueOccupancy());
-            emit(bufferOccupancySignal,bufferOccupancyIndication);
+
         }
 
         return true;    // notify the activation of the connection

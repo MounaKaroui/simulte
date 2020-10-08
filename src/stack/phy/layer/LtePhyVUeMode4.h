@@ -21,7 +21,7 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
 {
   public:
     static  simsignal_t sentToLowerLayerSignal;
-    static  simsignal_t cbrSignal;
+    double  mCBR;
 
   protected:
     // D2D Tx Power
