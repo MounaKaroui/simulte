@@ -22,6 +22,7 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
   public:
     static  simsignal_t sentToLowerLayerSignal;
     double  mCBR;
+    int numberofTBFrames=0;
 
   protected:
     // D2D Tx Power
@@ -46,6 +47,7 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
     std::vector<int> ThresPSSCHRSRPvector_;
 
     std::vector<LteAirFrame*> tbFrames_; // airframes received in the current TTI. Only one will be decoded
+
     cMessage* d2dDecodingTimer_; // timer for triggering decoding at the end of the TTI. Started when the first airframe is received
 
     std::vector<std::vector<double>> tbRsrpVectors_;

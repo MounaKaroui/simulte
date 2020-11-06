@@ -370,6 +370,9 @@ void LtePhyVUeMode4::handleAirFrame(cMessage* msg)
 
         // Capture the Airframe for decoding later
         storeAirFrame(frame);
+        if(!tbFrames_.empty())
+            numberofTBFrames=tbFrames_.size();
+
     } else {
         delete lteInfo;
         delete frame;
@@ -1260,6 +1263,7 @@ void LtePhyVUeMode4::storeAirFrame(LteAirFrame* newFrame)
         tbSinrVectors_.push_back(sinrVector);
         tbAttenuations_.push_back(attenuation);
     }
+
 }
 
 void LtePhyVUeMode4::decodeAirFrame(LteAirFrame* frame, UserControlInfo* lteInfo, std::vector<double> &rsrpVector, std::vector<double> &rssiVector, std::vector<double> &sinrVector, double &attenuation)
