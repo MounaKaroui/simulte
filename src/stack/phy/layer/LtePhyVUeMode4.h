@@ -172,5 +172,9 @@ class LtePhyVUeMode4 : public LtePhyUeD2D
             return d2dTxPower_;
         return txPower_;
     }
+
+    LteMode4SchedulingGrant* getSciGrant() const {
+        return sciGrant_;
+    }
 };
 
