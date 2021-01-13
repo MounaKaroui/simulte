@@ -32,6 +32,8 @@ class LteMacVUeMode4: public LteMacUeRealisticD2D {
 public:
 
 
+    int maximumCapacity_;
+
 protected:
 
    /// Lte AMC module
@@ -58,7 +60,7 @@ protected:
    int numSubchannels_;
    int minMCSPSSCH_;
    int maxMCSPSSCH_;
-   int maximumCapacity_;
+
    int allowedRetxNumberPSSCH_;
    int reselectAfter_;
    int defaultCbrIndex_;
