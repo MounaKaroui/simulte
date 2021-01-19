@@ -384,14 +384,7 @@ void LtePhyVUeMode4::handleUpperMessage(cMessage* msg)
 
     int msgFlag;
     UserControlInfo* lteInfo ;
-    if (msg->getClassName() == string("LteMacPdu"))
-    {
-    LteMacPdu* pkt=dynamic_cast<LteMacPdu*>(msg);
-    lteInfo = check_and_cast<UserControlInfo*>(pkt->getControlInfo());
-    msgFlag=lteInfo->getMsgFlag();
-    }
     lteInfo = check_and_cast<UserControlInfo*>(msg->removeControlInfo());
-    lteInfo->setMsgFlag(msgFlag);
 
     LteAirFrame* frame;
 

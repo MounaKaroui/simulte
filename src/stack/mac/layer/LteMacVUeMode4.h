@@ -37,13 +37,13 @@ public:
 
     int maxMCSPSSCH_;
 
+    map<int,int> pktIdentity;
+
 protected:
 
    /// Lte AMC module
    LteAmc *amc_;
 
-
-   int msgFlag;
    /// Local LteDeployer
    LteDeployer *deployer_;
 

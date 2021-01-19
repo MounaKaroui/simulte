@@ -368,7 +368,7 @@ void LteMacVUeMode4::macPduMake()
             // Always goes here because of the macPduList_.clear() at the beginning
             // Build the Control Element of the MAC PDU
             UserControlInfo* uinfo = new UserControlInfo();
-            uinfo->setMsgFlag(msgFlag);
+            uinfo->setMsgFlag(pktIdentity[destCid]);
             uinfo->setSourceId(getMacNodeId());
             uinfo->setDestId(destId);
             uinfo->setLcid(MacCidToLcid(destCid));
@@ -629,9 +629,9 @@ void LteMacVUeMode4::handleMessage(cMessage *msg)
         {
             //// changed by me
             FlowControlInfoNonIp* lteInfo = check_and_cast<FlowControlInfoNonIp*>(pkt->getControlInfo());
-            msgFlag=lteInfo->getMsgFlag();
+            MacCid cid = ctrlInfoToMacCid(check_and_cast<LteControlInfo*>(pkt->getControlInfo()));
+            pktIdentity[cid]=lteInfo->getMsgFlag();
             lteInfo = check_and_cast<FlowControlInfoNonIp*>(pkt->removeControlInfo());
-            lteInfo->setMsgFlag(msgFlag);
             //////
             receivedTime_ = NOW;
             simtime_t elapsedTime = receivedTime_ - lteInfo->getCreationTime();
@@ -1169,7 +1169,11 @@ void LteMacVUeMode4::flushHarqBuffers()
                             // Send Grant to PHY layer for sci creation
                             sendLowerPackets(phyGrant);
                             // Send pdu to PHY layer for sending.
+
+
                             it2->second->sendSelectedDown();
+
+
 
                             // Log transmission to A calculation log
                             previousTransmissions_[NOW.dbl()] = mode4Grant->getNumSubchannels();

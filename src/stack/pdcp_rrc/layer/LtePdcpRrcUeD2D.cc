@@ -21,10 +21,8 @@ void LtePdcpRrcUeD2D::fromDataIn(cPacket *pkt)
     // changed by me
     emit(receivedPacketFromUpperLayer, pkt);
     LteControlInfo* lteInfo = check_and_cast<LteControlInfo*>(pkt->getControlInfo());
-    int msgFlag=lteInfo->getMsgFlag();
     // Control Informations
     lteInfo = check_and_cast<LteControlInfo*>(pkt->removeControlInfo());
-    lteInfo->setMsgFlag(msgFlag);
     /////
     LogicalCid mylcid;
     // get the PDCP entity for this LCID
