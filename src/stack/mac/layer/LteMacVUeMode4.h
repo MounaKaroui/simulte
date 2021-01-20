@@ -37,7 +37,7 @@ public:
 
     int maxMCSPSSCH_;
 
-    map<int,int> pktIdentity;
+    vector<int> msgFlagList;
 
 protected:
 
