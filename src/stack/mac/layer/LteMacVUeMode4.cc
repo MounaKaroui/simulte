@@ -955,7 +955,7 @@ void LteMacVUeMode4::macHandleSps(cPacket* pkt)
 
     const unsigned int* tbsVect = itbs2tbs(mod, SINGLE_ANTENNA_PORT0, 1, maxMCSPSSCH_ - i);
     maximumCapacity_ = tbsVect[totalGrantedBlocks-1];
-    mode4Grant->setGrantedCwBytes(currentCw_, maximumCapacity_);
+    mode4Grant->setGrantedCwBytes(currentCw_, maximumCapacity_/8);
     // Simply flips the codeword.
     currentCw_ = MAX_CODEWORDS - currentCw_;
 
@@ -1143,7 +1143,7 @@ void LteMacVUeMode4::flushHarqBuffers()
                         {
                             foundValidMCS = true;
                             mode4Grant->setMcs(mcs);
-                            mode4Grant->setGrantedCwBytes(cw, mcsCapacity);
+                            mode4Grant->setGrantedCwBytes(cw, mcsCapacity/8);
 
                             if (!mode4Grant->getUserTxParams())
                             {
