@@ -22,7 +22,8 @@
 #include "stack/mac/layer/LteMacUeRealisticD2D.h"
 #include "corenetwork/deployer/LteDeployer.h"
 #include <unordered_map>
-
+#include <iostream>
+#include <list>
 //class LteMode4SchedulingGrant;
 
 class LteMacVUeMode4: public LteMacUeRealisticD2D {
@@ -34,10 +35,8 @@ public:
 
     int subchannelSize_;
     int numSubchannels_;
-
     int maxMCSPSSCH_;
-
-    vector<int> msgFlagList;
+    list<int> msgFlagList;
 
 protected:
 

@@ -76,7 +76,7 @@ bool LteMacUeRealistic::macSduRequest()
         MacNodeId destId = MacCidToNodeId(destCid);
 
         // get the number of granted bytes
-        unsigned int allocatedBytes = schedulingGrant_->getGrantedCwBytes(cw)/8;
+        unsigned int allocatedBytes = schedulingGrant_->getGrantedCwBytes(cw);
 
         // send the request message to the upper layer
         LteMacSduRequest* macSduRequest = new LteMacSduRequest("LteMacSduRequest");

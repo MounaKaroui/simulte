@@ -369,6 +369,8 @@ void LteMacVUeMode4::macPduMake()
             // Build the Control Element of the MAC PDU
             UserControlInfo* uinfo = new UserControlInfo();
             uinfo->setMsgFlag(msgFlagList.front()); // this can be moved to another section of code...
+            if(!msgFlagList.empty())
+                msgFlagList.pop_front();
             uinfo->setSourceId(getMacNodeId());
             uinfo->setDestId(destId);
             uinfo->setLcid(MacCidToLcid(destCid));
@@ -658,7 +660,7 @@ void LteMacVUeMode4::handleMessage(cMessage *msg)
                 mode4Grant->setMaximumLatency(remainingTime_);
             }
             // Need to set the size of our grant to the correct size we need to ask rlc for, i.e. for the sdu size.
-            schedulingGrant_->setGrantedCwBytes((MAX_CODEWORDS - currentCw_), pkt->getBitLength());
+            schedulingGrant_->setGrantedCwBytes((MAX_CODEWORDS - currentCw_), pkt->getByteLength());
 
             pkt->setControlInfo(lteInfo);
         }
