@@ -368,9 +368,7 @@ void LteMacVUeMode4::macPduMake()
             // Always goes here because of the macPduList_.clear() at the beginning
             // Build the Control Element of the MAC PDU
             UserControlInfo* uinfo = new UserControlInfo();
-            uinfo->setMsgFlag(msgFlagList.front()); // this can be moved to another section of code...
-            if(!msgFlagList.empty())
-                msgFlagList.pop_front();
+            uinfo->setMsgFlag(msgFlagList.front());
             uinfo->setSourceId(getMacNodeId());
             uinfo->setDestId(destId);
             uinfo->setLcid(MacCidToLcid(destCid));
@@ -424,6 +422,8 @@ void LteMacVUeMode4::macPduMake()
 
             macPkt->pushSdu(pkt);
             sduPerCid--;
+            if(!msgFlagList.empty())
+                msgFlagList.pop_front();
         }
 
         // consider virtual buffers to compute BSR size
