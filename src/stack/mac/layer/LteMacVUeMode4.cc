@@ -475,7 +475,7 @@ void LteMacVUeMode4::macPduMake()
         //Get a reference of the LteMacPdu from pit pointer (extract Pdu from the MAP)
         LteMacPdu* macPkt = pit->second;
 
-        EV << "LteMacUeRealisticD2D: pduMaker created PDU: " << macPkt->info() << endl;
+        std::cout << "LteMacUeRealisticD2D: pduMaker created PDU: " << macPkt->getByteLength() << endl;
 
         if (txList.second.empty())
         {
@@ -659,8 +659,6 @@ void LteMacVUeMode4::handleMessage(cMessage *msg)
                 // Need to get the creation time for this
                 mode4Grant->setMaximumLatency(remainingTime_);
             }
-            // Need to set the size of our grant to the correct size we need to ask rlc for, i.e. for the sdu size.
-            schedulingGrant_->setGrantedCwBytes((MAX_CODEWORDS - currentCw_), pkt->getByteLength());
 
             pkt->setControlInfo(lteInfo);
         }
@@ -959,7 +957,6 @@ void LteMacVUeMode4::macHandleSps(cPacket* pkt)
     maximumCapacity_ = tbsVect[totalGrantedBlocks-1];
     mode4Grant->setGrantedCwBytes(currentCw_, maximumCapacity_/8);
     // Simply flips the codeword.
-    currentCw_ = MAX_CODEWORDS - currentCw_;
 
     periodCounter_= mode4Grant->getPeriod();
     expirationCounter_= (mode4Grant->getResourceReselectionCounter() * periodCounter_) + 1;
@@ -1141,7 +1138,7 @@ void LteMacVUeMode4::flushHarqBuffers()
                         const unsigned int* tbsVect = itbs2tbs(mod, SINGLE_ANTENNA_PORT0, 1, mcs - i);
                         mcsCapacity = tbsVect[totalGrantedBlocks-1];
 
-                        if (mcsCapacity > pduLength)
+                        if (mcsCapacity >= pduLength)
                         {
                             foundValidMCS = true;
                             mode4Grant->setMcs(mcs);
@@ -1211,11 +1208,6 @@ void LteMacVUeMode4::flushHarqBuffers()
                             schedulingGrant_ = NULL;
                             macGenerateSchedulingGrant(remainingTime_, priority);
                         }
-//                        cRuntimeError((string("PDU length= ")
-//                                + to_string(pduLength)
-//                                + string(" is higher than the MCS capacity= ")
-//                                + to_string(mcsCapacity)
-//                                + " , please reconfigure PDU length :)").c_str());
                     }
                 }
                 break;
